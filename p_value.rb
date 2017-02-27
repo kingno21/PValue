@@ -38,12 +38,14 @@ module Normdist
 end
 
 module PValue
+
   class Group
-    attr_reader :count, :total
+    attr_reader :count, :total, :value
 
     def initialize count, total
       @count = count.to_f
       @total = total.to_f
+      @value = @count / @total
     end
   end
 
@@ -57,8 +59,8 @@ module PValue
 
     def calculate
       value_c = (group_a.count + group_b.count) / (group_a.total + group_b.total)
-      value_a = (group_a.count - group_b.count).abs - (1/ group_b.total + 1/ group_a.total) / 2
-      value_b = Math.sqrt(value_c * (1 - value_c)) * (1/ group_b.total + 1/ group_a.total) / 2
+      value_a = (group_a.value - group_b.value).abs - (1/ group_b.total + 1/ group_a.total) / 2
+      value_b = Math.sqrt(value_c * (1 - value_c) * (1/ group_b.total + 1/ group_a.total))
       1 - Normdist.normdist(value_a/value_b, 0, 1, true)
     end
   end
